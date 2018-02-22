@@ -21,7 +21,7 @@ const moduleRules = {
 
 exports.site = {
   debug: true,
-  devtool: '#eval-source-map',
+  devtool: '#source-map',
   output: {filename: 'compiled.js'},
   module: moduleRules,
   resolve: resolveRules

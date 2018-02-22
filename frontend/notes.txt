@@ -7,3 +7,15 @@ mongo localhost/vid
 
 
 
+  <a href="/video//annotations/google-home-superbowl.mp4" class="video-card " data-navigo>
+      <div class="video-card-hero">
+        <video class="video-card-video" 
+        poster="/annotations/google-home-superbowl.png" 
+        preload="metadata" 
+        id="/annotations/google-home-superbowl.mp4" 
+        src="/annotations/google-home-superbowl.mp4"></video>
+      </div>
+      <h3 class="text-body">google-home-superbowl</h3>
+      <div class="video-card-graph"></div>
+      <p class="text-caption is-secondary">hand, dinner, graphics, wilderness, hound, eating, road, pet, mountain pass, traffic, roof...</p>
+    </a>

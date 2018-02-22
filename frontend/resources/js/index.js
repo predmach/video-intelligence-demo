@@ -39,56 +39,24 @@ class App {
     // RENDER LOADING SPINNER
     this.renderLoadingIndicator();
 
+    let useCache = false;
     idbKeyval.get('videos')
     .then((data) => {
       // IF DATA EXISTS RUN APP
-      if(typeof data != 'undefined') {
+      if(useCache && typeof data != 'undefined') {
         this.initApp();
       }
       // OTHERWISE FETCH VIDEO DATA
       else {
-        return Promise.resolve()
+        return this.getVideoData()
           .then(() => {
-            const that = this;
-
-            return $.ajax({
-              url: VIDEO_API,
-
-              beforeSend() {
-                $('#status').text('Loading video library...');
-              },
-
-              complete() {
-                $('#status').text('');
-              },
-
-              success(msg, status, xhr) {
-                const videos = xhr.responseJSON;
-                const sortedVideos = _.sortBy(videos, ['name']);
-                idbKeyval.set('videos', sortedVideos)
-                  .then(() => {
-                    console.log('got videos');
-                    that.initApp();
-                  })
-                  .catch(err => console.log('getting vids failed', err));
-
-
-                this.initApp();
-              }
-            });
-
-          }).then(() => {
-            return idbKeyval.get('videos');    
-          }).then((videos) => {
-              const videoCards = videos.map((video) => VideoCard(video)).join('');
-              this.$stage.html(this.template(videoCards));
+            this.initApp();
           })
           .catch((err) => {
             console.log('error', err);
           });
       }        
     });
-
   }
 
   renderLoadingIndicator() {
@@ -104,7 +72,6 @@ class App {
     this.router = new Navigo(ROOT_URL, false);
     this.router.updatePageLinks();
 
-
     this.router.on({
       '/': () => {
         this.renderPage('home');
@@ -112,16 +79,18 @@ class App {
       '/profile': () => {
         this.renderPage('profile');
       },
-      '/video/:id': (params) => {
-        this.renderPage('video', params.id);
+      '/video': (params, query) => {
+        this.renderPage('video', query);
       },
       '/search/:query': (params) => {
         this.renderPage('search', params.query);
       }
     })
+    .notFound(function (query) {
+      console.log(`bad page route: ${query}`);
+    })
     .resolve();
   }
-
 
   renderPage(page, data) {
     // CLEAR PREVIOUS PAGE
@@ -155,29 +124,27 @@ class App {
   }
 
   getVideoData() {
-    const that = this;
+    return new Promise((resolve,reject)=>{
+      $.ajax({
+        url: VIDEO_API,
 
-    $.ajax({
-      url: VIDEO_API,
-
-      beforeSend() {
-        $('#status').text('Loading video library...');
-      },
-
-      complete() {
-        $('#status').text('');
-      },
-
-      success(msg, status, xhr) {
-        const videos = xhr.responseJSON;
-        const sortedVideos = _.sortBy(videos, ['name']);
-        idbKeyval.set('videos', sortedVideos)
+        beforeSend() {
+          $('#status').text('Loading video library...');
+        },
+        complete() {
+          $('#status').text('');
+        }, 
+        success(msg, status, xhr) {
+          const videos = xhr.responseJSON;
+          const sortedVideos = _.sortBy(videos, ['name']);
+          idbKeyval.set('videos', sortedVideos)
           .then(() => {
-            console.log('It worked here!');
-            that.initApp();
+            console.log('got videos');
+            resolve();
           })
-          .catch(err => console.log('It failed!', err));
-      }
+          .catch(err => reject('getting vids failed', err));
+        } 
+      });
     });
   }
 
@@ -185,7 +152,6 @@ class App {
     this.$stage.html('');
   }
 }
-
 
 export default App;
 

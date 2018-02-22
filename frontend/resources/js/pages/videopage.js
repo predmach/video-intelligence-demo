@@ -22,6 +22,7 @@ import VideoCard from '../components/video-card';
 class VideoPage {
   constructor(stage, router, videoId) {
     // REGISTER VARIABLES
+    console.log(videoId);
     this.$stage = stage;
     this.router = router;
     this.videoId = videoId;
@@ -36,8 +37,6 @@ class VideoPage {
       this.render();
       return this;
     });
-    
-
   }
 
   render() {

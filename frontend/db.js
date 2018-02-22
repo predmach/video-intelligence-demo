@@ -58,13 +58,18 @@ function populate() {
     let hash = sha256(video_url)
     // let path = `/${hash}`
     let path = ``
-    let repo = '../sample-annotations'
+    // let repo = '../sample-annotations'
+    let repo = '/annotations'
     let name = `google-home-superbowl`
 
     fs = require('fs');
-    var annotations = fs.readFileSync(`${repo}${path}/${name}mp4.json`, "utf8");
+    // var annotations = fs.readFileSync(`${repo}${path}/${name}mp4.json`, "utf8");
+    // var annotations = fs.readFileSync(`../sample-annotations${path}/${name}mp4.json`, "utf8");
+    let annotations = `../sample-annotations${path}/${name}mp4.json`
+        // JSON.stringify(
+        //     require(`../sample-annotations${path}/${name}mp4.json`).annotation_results[0]);
 
-    var testVideo = new Video({
+    let testVideo = new Video({
         _id: new mongoose.Types.ObjectId(),
         url: video_url,
         hash: hash,
@@ -81,7 +86,7 @@ function populate() {
         if (err) throw err;
          
         console.log('Video successfully saved.');         
-        var proc1 = new MetaLayer({
+        let proc1 = new MetaLayer({
             _id: new mongoose.Types.ObjectId(),
             processing: 'Faster R-CNN',
             summary: 'From Facebook, with ResNet-101',
@@ -99,7 +104,7 @@ function populate() {
             console.log('Processing 1 successfully saved.');
         });
          
-        var proc2 = new MetaLayer({
+        let proc2 = new MetaLayer({
             _id: new mongoose.Types.ObjectId(),
             processing: 'Masked FCN',
             summary: 'From Facebook, with VGG',

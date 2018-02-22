@@ -18,7 +18,8 @@ import _ from 'lodash';
 export default function(video, query, expanded) {
   const title = video.name;
   const label_annotations = video.annotations.shot_label_annotations;
-  const tags = video.annotations.shot_label_annotations.map(label => label.entity.description).join(', ');
+  const tags = video.annotations.shot_label_annotations
+      .map(label => label.entity.description).join(', ');
   // DEFAULT VALUES
   let header = `<h3 class="text-body">${title}</h3>`;
   let selectedTags = tags.length > 90 ? `${tags.substring(0,90)}...` : tags;
@@ -33,7 +34,7 @@ export default function(video, query, expanded) {
 
   // RETURN VIDEO CARD ELEMENT
   return `
-    <a href="/video/${video.url_safe_id}" class="video-card ${isExpanded}" data-navigo>
+    <a href="/video/?${video.url_safe_id}" class="video-card ${isExpanded}" data-navigo>
       <div class="video-card-hero">
         <video class="video-card-video" poster="${video.thumbnail}" preload="metadata" id="${video.url_safe_id}" src="${video.link}"></video>
       </div>

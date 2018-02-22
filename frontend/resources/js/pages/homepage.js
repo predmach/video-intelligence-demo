@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import store from 'store';
+import idbKeyval from 'idb-keyval';
 
 import VideoCard from '../components/video-card';
 
@@ -39,10 +39,17 @@ class HomePage {
   }
 
   render() {
-    const videos = store.get('videos');
-    const videoCards = videos.map((video) => VideoCard(video)).join('');
-
-    this.$stage.html(this.template(videoCards));
+    idbKeyval.get('videos')
+    .then((videos) => {
+      // IF DATA EXISTS RUN APP
+      if(typeof videos != 'undefined') {
+        const videoCards = videos.map(video => VideoCard(video)).join('');
+        this.$stage.html(this.template(videoCards));
+      }
+      else {
+        console.error(`can't load videos from HTML5 store...`)
+      }
+    });
   }
 }
 
